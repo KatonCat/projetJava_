@@ -7,10 +7,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.Scanner;
+
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
-import static Connexion.Connexion.userName;
+//import static Connexion.Connexion.userName;
 
 public class Ecoute extends Thread {
 
@@ -18,11 +20,12 @@ public class Ecoute extends Thread {
     private boolean connecte;
     private byte[] buf = new byte[256];
     public static UserList liste = new UserList();
+
     public RemoteUser user1 ;
 
     public Ecoute() throws SocketException {
 
-        socket = new DatagramSocket(UDP.UDP_PORT);
+        socket = new DatagramSocket(UDP.UDP_PORT );
     }
 
     public void run() {
@@ -36,56 +39,23 @@ public class Ecoute extends Thread {
                 e.printStackTrace();
             }
 
-            while(liste.lengthListe()==0){
+            InetAddress address = packet.getAddress();
+            int port = packet.getPort();
+            String received = new String(packet.getData(), 0, packet.getLength());
+
+
+            if(liste.lengthListe()==0){
                 while (connecte) {
-
-                    //DatagramPacket packet = new DatagramPacket(buf, buf.length);
-
-
-                    /*try {
-                        socket.receive(packet);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }*/
-
-                    InetAddress address = packet.getAddress();
-                    int port = packet.getPort();
-                    String received = new String(packet.getData(), 0, packet.getLength());
-                    System.out.println(received);
+                    liste.addUser(new RemoteUser(received,address));
+                    System.out.println("la liste est "+liste);
 
 
-                    //if (received.equals("Id already used"))//
-
-                    //    System.out.println("This Id is already used try new one ");
-                    //    connecte = false;
-                    //    continue;
-                    //}
-                    //else{
-                        liste.addUser(new RemoteUser(received,address));
-                        System.out.println("The user "+ received+ " is now connected");
-                        System.out.println("The users list is "+ liste );
-
-                    //}
                     break;
 
                 }
             }
 
-            /*DatagramPacket packet = new DatagramPacket(buf, buf.length);
-            try {
-                socket.receive(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-
-            InetAddress address = packet.getAddress();
-            int port = packet.getPort();
-            String received = new String(packet.getData(), 0, packet.getLength());
-            System.out.println(received);
-
-
-            if (received.equals("end")) {
+            else if (received.equals("end")) {
 
                 System.out.println("Disconnect");
                 try {
@@ -96,11 +66,20 @@ public class Ecoute extends Thread {
                 connecte = false;
                 continue;
             }
-            /*else if(liste.verifyUserNamePresent(received)) {
 
-            }*/
-            else if(received.equals(userName)){
+            else if (received.equals("Id already used")) {
+                System.out.println("someone already has this Id please try again with a new one");
+                try {
+                    Connexion.verifyId();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            else if(liste.verifyUserNamePresent(received)){
                 String msgErreur = "Id already used" ;
+                System.out.println("le nom d'utilisateur "+received+"est deja utilisé");
+
                 byte[] buf = msgErreur.getBytes();
                 packet = new DatagramPacket(buf, buf.length, address, port);
                 try {
@@ -109,9 +88,14 @@ public class Ecoute extends Thread {
                     e.printStackTrace();
                 }
             }
+
             else{
                 liste.addUser(new RemoteUser(received,address));
-                System.out.println("This user is now connected : "+ received);
+
+                System.out.println("la nouvelle liste est "+liste);
+
+
+
             }
 
         }
