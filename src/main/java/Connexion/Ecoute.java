@@ -23,9 +23,13 @@ public class Ecoute extends Thread {
 
     public RemoteUser user1 ;
 
-    public Ecoute() throws SocketException {
+    private Connexion connexion;
 
-        socket = new DatagramSocket(UDP.UDP_PORT );
+    public Ecoute(Connexion connexion ) throws SocketException {
+
+        socket = new DatagramSocket(UDP.UDP_PORT  );
+        this.connexion = connexion ;
+
     }
 
     public void run() {
@@ -70,15 +74,20 @@ public class Ecoute extends Thread {
             else if (received.equals("Id already used")) {
                 System.out.println("someone already has this Id please try again with a new one");
                 try {
-                    Connexion.verifyId();
+                    connexion.verifyId();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
 
+            else if (received.startsWith("Bienvenue mon id est :")) {
+                String id = received.replace("Bienvenue mon id est :", "");
+                liste.addUser(new RemoteUser(id , address));
+            }
+
             else if(liste.verifyUserNamePresent(received)){
                 String msgErreur = "Id already used" ;
-                System.out.println("le nom d'utilisateur "+received+"est deja utilisé");
+                System.out.println("le nom d'utilisateur "+received+" est deja utilisé");
 
                 byte[] buf = msgErreur.getBytes();
                 packet = new DatagramPacket(buf, buf.length, address, port);
@@ -91,11 +100,19 @@ public class Ecoute extends Thread {
 
             else{
                 liste.addUser(new RemoteUser(received,address));
+                System.out.println("la nouvelle liste est : "+liste);
 
-                System.out.println("la nouvelle liste est "+liste);
+                String msg = "Bienvenue mon id est : "+connexion.getPseudo() ;
 
+                byte[] buf = msg.getBytes();
+                packet = new DatagramPacket(buf, buf.length, address, port);
+                try {
+                    socket.send(packet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-
+                System.out.println(""+connexion.getPseudo());
             }
 
         }

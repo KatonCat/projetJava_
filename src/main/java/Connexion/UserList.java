@@ -20,7 +20,7 @@ public class UserList {
     public RemoteUser getUserByAdd(InetAddress add) throws UserNotFoundException {
         int i;
         for (i = 0; i < users.size(); i++) {
-            if ((users.get(i)).getAdd() == add)
+            if ((users.get(i)).getAdd().equals(add))
                 return users.get(i);
         }
         throw new UserNotFoundException("User not found");

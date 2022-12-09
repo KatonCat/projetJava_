@@ -12,10 +12,15 @@ public class mainTest {
         RemoteUser u1 = new RemoteUser("toto" , InetAddress.getByName("25.25.78.168") );
         liste.addUser(u1);
         System.out.println("la liste est "+liste);
-        new Ecoute().start();
+        Connexion conn = new Connexion();
 
-        new Connexion().verifyId();
+        new Ecoute(conn).start();
 
 
+        conn.verifyId();
+        System.out.println("pseudo : " + conn.getPseudo());
+        //new Connexion().verifyId();
+
+        //new Connexion().verifyId();
     }
 }

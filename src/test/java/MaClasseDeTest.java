@@ -41,6 +41,14 @@ public class MaClasseDeTest {
         System.out.println("la liste est "+liste.toString());
 
         assert liste.verifyUserNamePresent("toto");
+        try {
+        assert liste.getUserByAdd(address).equals(u1);
+        }
+        catch(UserNotFoundException e)
+        {
+            e.printStackTrace();
+
+        }
 
     }
 }
