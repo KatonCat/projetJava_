@@ -18,7 +18,7 @@ public class mainTest {
 
 
         conn.verifyId();
-        System.out.println("pseudo : " + conn.getPseudo());
+        //System.out.println("pseudo : " + conn.getPseudo());
         //new Connexion().verifyId();
 
         //new Connexion().verifyId();
