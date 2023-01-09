@@ -8,10 +8,10 @@ public class Connexion{
 
     private String pseudo ;
 
-    public void verifyId() throws IOException {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("choose id");
-        String str = sc.next();
+    public void verifyId(String str) throws IOException {
+        //Scanner sc = new Scanner(System.in);
+        //System.out.println("choose id");
+        //String str = sc.next();
         UDP.broadcast(str , InetAddress.getByName("255.255.255.255"));
         this.pseudo = str;
         //System.out.println("changing the pseudo");

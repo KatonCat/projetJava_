@@ -83,11 +83,7 @@ public class Ecoute extends Thread {
 
                 else if (received.equals("Id already used")) {
                     System.out.println("someone already has this Id please try again with a new one");
-                    try {
-                        connexion.verifyId();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+
                 }
 
                 else if (received.startsWith("Bienvenue mon id est :")) {
