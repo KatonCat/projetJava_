@@ -1,6 +1,11 @@
-/home/alami-mejjat/IdeaProjects/projetJava/src/main/java/UserList.java
-/home/alami-mejjat/IdeaProjects/projetJava/src/main/java/Connexion.java
-/home/alami-mejjat/IdeaProjects/projetJava/src/main/java/Ecoute.java
-/home/alami-mejjat/IdeaProjects/projetJava/src/main/java/RemoteUser.java
-/home/alami-mejjat/IdeaProjects/projetJava/src/main/java/mainTest.java
-/home/alami-mejjat/IdeaProjects/projetJava/src/main/java/UDP.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\Connexion\Connexion.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\Connexion\Ecoute.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\Connexion\UDP.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\Interface\WelcomeControler.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\Interface\App.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\Connexion\RemoteUser.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\ConnexionExceptions\PseudoIndisponibleException.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\Interface\MainWindowController.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\mainTest.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\ConnexionExceptions\UserNotFoundException.java
+C:\Users\hp\IdeaProjects\projetJava_\src\main\java\Connexion\UserList.java
