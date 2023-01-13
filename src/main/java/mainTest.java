@@ -1,6 +1,7 @@
 import Connexion.Connexion;
 import Connexion.Ecoute;
 import Connexion.RemoteUser;
+import Connexion.ConnectionListener;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -14,10 +15,23 @@ public class mainTest {
         System.out.println("la liste est "+liste);
         Connexion conn = new Connexion();
 
-        new Ecoute(conn).start();
 
 
-        conn.verifyId();
+        ConnectionListener listener = new ConnectionListener() {
+            @Override
+            public void invalidID() {
+                System.out.println("INVALID");
+
+            }
+            public void validID() {
+                System.out.println("INVALID");
+
+            }
+        };
+       // new Ecoute(conn, listener).start();
+
+
+        //conn.verifyId("toto");
         //System.out.println("pseudo : " + conn.getPseudo());
         //new Connexion().verifyId();
 

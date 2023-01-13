@@ -5,10 +5,6 @@ import ConnexionExceptions.UserNotFoundException;
 import java.io.IOException;
 import java.net.*;
 import java.util.Enumeration;
-import java.util.Scanner;
-
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 
 //import static Connexion.Connexion.userName;
 
@@ -23,12 +19,16 @@ public class Ecoute extends Thread {
 
     private Connexion connexion;
 
-    public Ecoute(Connexion connexion ) throws SocketException {
+    private final ConnectionListener listener;
 
+    public Ecoute(Connexion connexion, ConnectionListener listener) throws SocketException {
+        this.listener = listener;
+        System.out.println("testtt");
         socket = new DatagramSocket(UDP.UDP_PORT  );
         this.connexion = connexion ;
 
     }
+    //observable 
 
     public void run() {
         connecte = true;
@@ -62,6 +62,7 @@ public class Ecoute extends Thread {
                     while (connecte) {
                         liste.addUser(new RemoteUser(received,address));
                         System.out.println("la liste est "+liste);
+                        listener.validID();
 
 
                         break;
@@ -82,11 +83,11 @@ public class Ecoute extends Thread {
                 }
 
                 else if (received.equals("Id already used")) {
-                    System.out.println("someone already has this Id please try again with a new one");
-
+                    listener.invalidID();
                 }
 
                 else if (received.startsWith("Bienvenue mon id est :")) {
+                    listener.validID();
                     String id = received.replace("Bienvenue mon id est :", "");
                     liste.addUser(new RemoteUser(id , address));
                 }
