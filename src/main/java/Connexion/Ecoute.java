@@ -23,7 +23,6 @@ public class Ecoute extends Thread {
 
     public Ecoute(Connexion connexion, ConnectionListener listener) throws SocketException {
         this.listener = listener;
-        System.out.println("testtt");
         socket = new DatagramSocket(UDP.UDP_PORT  );
         this.connexion = connexion ;
 
@@ -60,9 +59,10 @@ public class Ecoute extends Thread {
 
                 if(liste.lengthListe()==0){
                     while (connecte) {
+                        listener.validID();
                         liste.addUser(new RemoteUser(received,address));
                         System.out.println("la liste est "+liste);
-                        listener.validID();
+
 
 
                         break;

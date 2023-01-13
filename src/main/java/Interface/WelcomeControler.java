@@ -82,6 +82,7 @@ public class WelcomeControler  {
             stage.setScene(scene);
             stage.show();
             System.out.println("username available");
+
         }
         else {
             System.out.println("username unavailable");
