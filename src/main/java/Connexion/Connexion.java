@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 public class Connexion{
 
+
+
     private String pseudo ;
 
     public void verifyId(String str) throws IOException {
