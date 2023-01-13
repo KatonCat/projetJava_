@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class UDP {
-    public static int UDP_PORT = 8050;
+    public static int UDP_PORT = 8060;
     private static DatagramSocket socket = null;
 
     public static void broadcast(String broadcastMessage, InetAddress address) throws IOException {
