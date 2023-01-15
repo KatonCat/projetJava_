@@ -17,15 +17,20 @@ public class Ecoute extends Thread {
 
     public RemoteUser user1 ;
 
-    private Connexion connexion;
+    private Connexion connexion ;
 
     private final ConnectionListener listener;
+
+    public void stopSocket(){
+        socket.close();
+    }
+
 
     public Ecoute(Connexion connexion, ConnectionListener listener) throws SocketException {
         this.listener = listener;
         socket = new DatagramSocket(UDP.UDP_PORT  );
         this.connexion = connexion ;
-
+        System.out.println("le n de tests");
     }
     //observable 
 
@@ -33,9 +38,13 @@ public class Ecoute extends Thread {
         connecte = true;
 
         while (connecte) {
+
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             try {
+
                 socket.receive(packet);
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -44,33 +53,28 @@ public class Ecoute extends Thread {
             int port = packet.getPort();
             String received = new String(packet.getData(), 0, packet.getLength());
 
+
             try {
                 Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
                 NetworkInterface eth = en.nextElement();
                 InterfaceAddress ia = eth.getInterfaceAddresses().get(1);
                 myIPadd=ia.getAddress();
 
-                } catch (SocketException e) {
+            } catch (SocketException e) {
                 e.printStackTrace();
             }
-            if(  address.equals(myIPadd ) ){ }
-                else{
+            if (address.equals(myIPadd) ) {
+                if (liste.lengthListe()==0){
+                    listener.validID();
+                    System.out.println("ya personne");}
+                else{}
+            }
 
 
-                if(liste.lengthListe()==0){
-                    while (connecte) {
-                        listener.validID();
-                        liste.addUser(new RemoteUser(received,address));
-                        System.out.println("la liste est "+liste);
+            else{
+                System.out.println("nouveau msg recu: "+received);
 
-
-
-                        break;
-
-                    }
-                }
-
-                else if (received.equals("end")) {
+                if (received.equals("end")) {
 
                     System.out.println("Disconnect");
                     try {
@@ -82,37 +86,61 @@ public class Ecoute extends Thread {
                     continue;
                 }
 
+                /*if(liste.lengthListe()==0 && !received.equals(connexion.getPseudo()) ) {
+                    while (connecte) {
+
+                        System.out.println("la liste est vide mais : "+received);
+                        listener.validID();
+                        liste.addUser(new RemoteUser(received,address));
+                        break;
+
+                    }
+                }*/
+
                 else if (received.equals("Id already used")) {
                     listener.invalidID();
                 }
 
                 else if (received.startsWith("Bienvenue mon id est :")) {
+                    System.out.println("binvenue mon id est");
                     listener.validID();
                     String id = received.replace("Bienvenue mon id est :", "");
                     liste.addUser(new RemoteUser(id , address));
+                    try {
+                        System.out.println("la liste est "+liste.getids());
+                    } catch (UserNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
 
-                else if(liste.verifyUserNamePresent(received)){
+                else if(liste.verifyUserNamePresent(received) || received.equals(connexion.getPseudo())){
+                    listener.invalidID();
+                    //System.out.println("l'util est present");
                     String msgErreur = "Id already used" ;
                     System.out.println("le nom d'utilisateur "+received+" est deja utilisé");
 
                     byte[] buf = msgErreur.getBytes();
-                    packet = new DatagramPacket(buf, buf.length, address, port);
+
+                    packet = new DatagramPacket(buf, buf.length, address, UDP.UDP_PORT);
                     try {
                         socket.send(packet);
+                        System.out.println("j'envoie le packet et le port est : " +packet.getPort());
+
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
 
-                else{
+
+                else if (!liste.verifyUserNamePresent(received) || !received.equals(connexion.getPseudo())){
                     liste.addUser(new RemoteUser(received,address));
                     System.out.println("la nouvelle liste est : "+liste);
 
-                    String msg = "Bienvenue mon id est : "+connexion.getPseudo() ;
+                    String msg = "Bienvenue mon id est :"+connexion.getPseudo() ;
 
                     byte[] buf = msg.getBytes();
-                    packet = new DatagramPacket(buf, buf.length, address, port);
+                    packet = new DatagramPacket(buf, buf.length, address, UDP.UDP_PORT);
                     try {
                         socket.send(packet);
                     } catch (IOException e) {
@@ -121,14 +149,17 @@ public class Ecoute extends Thread {
 
                     System.out.println(""+connexion.getPseudo());
                 }
+
             }
-            }
+
+        }
+
 
 
 
 
         socket.close();
-        }
+    }
 
 
 }

@@ -23,10 +23,7 @@ public class mainTest {
                 System.out.println("INVALID");
 
             }
-            public void validID() {
-                System.out.println("INVALID");
-
-            }
+            public void validID() { System.out.println("INVALID"); }
         };
        // new Ecoute(conn, listener).start();
 

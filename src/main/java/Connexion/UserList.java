@@ -6,16 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserList {
-
     private final List<RemoteUser> users = new ArrayList<>();
 
-    public void addUser(RemoteUser user) {
-        users.add(user);
-    }
+    public void addUser(RemoteUser user) { users.add(user); }
 
     public void delUser(RemoteUser user) {
         users.remove(user);
     }
+
+    public int lengthListe(){
+        return users.size();
+    }
+
+    public String getid (int i) { return (users.get(i)).getUserName(); }
 
     public RemoteUser getUserByAdd(InetAddress add) throws UserNotFoundException {
         int i;
@@ -34,16 +37,28 @@ public class UserList {
         }
          return false;
     }
-    public int lengthListe(){
-        return users.size();
-    }
 
+
+    public List<String> getids() throws UserNotFoundException{
+        List<String> userids = new ArrayList<>();
+        if (!users.isEmpty() ){
+            //System.out.println("hhhhh");
+           for(int i = 0; i < users.size(); i++)
+                userids.add(((users.get(i)).getUserName()));
+           return userids;
+        }
+        else
+        throw new UserNotFoundException("the list is empty");
+    }
     @Override
     public String toString() {
         return "UserList{" +
                 "users=" + users +
                 '}';
     }
+
+
+
 }
 
 
