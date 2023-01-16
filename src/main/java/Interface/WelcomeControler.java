@@ -81,7 +81,7 @@ public class WelcomeControler {
 
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -90,6 +90,8 @@ public class WelcomeControler {
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("mainWindow.fxml"));
             stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            stage.setUserData(ecoute);
+            stage.setTitle("home - "+connexion.getPseudo());
             scene = new Scene(fxmlLoader.load(),580, 340);
             stage.setScene(scene);
             stage.show();

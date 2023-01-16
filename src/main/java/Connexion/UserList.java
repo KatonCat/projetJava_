@@ -1,12 +1,15 @@
 package Connexion;
 import ConnexionExceptions.UserNotFoundException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserList {
-    private final List<RemoteUser> users = new ArrayList<>();
+    //private final List<RemoteUser> users = new ArrayList<>();
+    private final ObservableList<RemoteUser> users = FXCollections.observableArrayList();
 
     public void addUser(RemoteUser user) { users.add(user); }
 
@@ -27,6 +30,10 @@ public class UserList {
                 return users.get(i);
         }
         throw new UserNotFoundException("User not found");
+    }
+
+    public ObservableList<RemoteUser>  getUsers (){
+        return this.users;
     }
 
     public boolean verifyUserNamePresent(String userName) {
@@ -50,12 +57,14 @@ public class UserList {
         else
         throw new UserNotFoundException("the list is empty");
     }
+
     @Override
     public String toString() {
         return "UserList{" +
                 "users=" + users +
                 '}';
     }
+
 
 
 

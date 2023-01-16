@@ -5,6 +5,7 @@ import ConnexionExceptions.UserNotFoundException;
 import java.io.IOException;
 import java.net.*;
 import java.util.Enumeration;
+import java.util.List;
 
 //import static Connexion.Connexion.userName;
 
@@ -25,6 +26,9 @@ public class Ecoute extends Thread {
         socket.close();
     }
 
+    public Connexion getConnexion() {
+        return this.connexion;
+    }
 
     public Ecoute(Connexion connexion, ConnectionListener listener) throws SocketException {
         this.listener = listener;
@@ -59,9 +63,10 @@ public class Ecoute extends Thread {
                 NetworkInterface eth = en.nextElement();
                 InterfaceAddress ia = eth.getInterfaceAddresses().get(1);
                 myIPadd=ia.getAddress();
+                System.out.println(""+myIPadd);
 
             } catch (SocketException e) {
-                e.printStackTrace();
+
             }
             if (address.equals(myIPadd) ) {
                 if (liste.lengthListe()==0){
@@ -82,8 +87,7 @@ public class Ecoute extends Thread {
                     } catch (UserNotFoundException e) {
                         e.printStackTrace();
                     }
-                    connecte = false;
-                    continue;
+
                 }
 
                 /*if(liste.lengthListe()==0 && !received.equals(connexion.getPseudo()) ) {
