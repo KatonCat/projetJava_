@@ -13,6 +13,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import Connexion.Ecoute;
 import Connexion.UDP;
+import Clavardage.StartSession;
 
 import Connexion.Connexion;
 import Connexion.RemoteUser;
@@ -46,23 +47,27 @@ public class MainWindowController {
     @FXML
     private TableView<RemoteUser> onlineUsersList;
 
+    @FXML
+    private Button sendButton;
 
 
     @FXML
     private void initialize() {
-
-        //Ecoute ecoute = (Ecoute) App.getStage().getUserData();
         instance = this;
-
-        //App.getStage().setTitle("Home - " + Connexion.getPseudo());
         items = FXCollections.observableArrayList();
         onlineUsersList.setItems(items);
         onlineUsersTable.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUserName()));
-        /*for (RemoteUser user : Ecoute.liste.getUsers() ){
-            System.out.println(user.getUserName());
-            items.add(user);
-        }*/
         onlineUsersList.setItems(Ecoute.liste.getUsers());
+        onlineUsersList.setOnMouseClicked(event ->{
+           RemoteUser selectedUser = onlineUsersList.getSelectionModel().getSelectedItem();
+                if (selectedUser != null){
+                    try {
+                        StartSession.StartSession(selectedUser.getAdd());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+        });
 
         }
 
@@ -74,10 +79,10 @@ public class MainWindowController {
 
     @FXML
     void changeUsername(ActionEvent event) throws IOException {
-        Ecoute ecoute = (Ecoute) App.getStage().getUserData();
+        //Ecoute ecoute = (Ecoute) App.getStage().getUserData();
         //String userName = userNameText.getText();
-        ecoute.getConnexion().changePseudo("titi");
-        App.getStage().setTitle("home -titi");
+        //ecoute.getConnexion().changePseudo("titi");
+        //App.getStage().setTitle("home -titi");
     }
 
     @FXML
@@ -99,6 +104,10 @@ public class MainWindowController {
         stage.show();
     }
 
+    @FXML
+    void SendMessage(ActionEvent event) {
+
+    }
 
 
 }
