@@ -14,18 +14,24 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Scanner;
 
-public class MultiServeurTCP {
+public class MultiServeurTCP extends Thread{
     private ServerSocket serverSocket;
-
-    public void start(int port) throws IOException {
+    private final int port;
+    public MultiServeurTCP(int port){this.port = port;}
+    public void run(){
+        try {
         CreateBDD.createNewDatabase("CentralMessages.db");
         serverSocket = new ServerSocket(port);
-        while(true) {
-            new ClientHandler(serverSocket.accept()).start();
-        }
 
+            while(true) {
+                new ClientHandler(serverSocket.accept()).start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Could not create the server n/or accept.");
+        }
     }
-    public void stop() throws IOException {
+    public void close() throws IOException {
         serverSocket.close();
     }
 
@@ -125,6 +131,8 @@ public class MultiServeurTCP {
         }
 
     }
+
+
 
 
 }
