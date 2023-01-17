@@ -73,8 +73,11 @@ public class MainWindowController {
     }
 
     @FXML
-    void changeUsername(ActionEvent event) {
-
+    void changeUsername(ActionEvent event) throws IOException {
+        Ecoute ecoute = (Ecoute) App.getStage().getUserData();
+        //String userName = userNameText.getText();
+        ecoute.getConnexion().changePseudo("titi");
+        App.getStage().setTitle("home -titi");
     }
 
     @FXML

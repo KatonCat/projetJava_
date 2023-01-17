@@ -54,7 +54,7 @@ public class Ecoute extends Thread {
             }
 
             InetAddress address = packet.getAddress();
-            int port = packet.getPort();
+            //int port = packet.getPort();
             String received = new String(packet.getData(), 0, packet.getLength());
 
 

@@ -1,7 +1,10 @@
 package Connexion;
 
+import javafx.beans.Observable;
+
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Connexion{
@@ -18,6 +21,12 @@ public class Connexion{
         this.pseudo = str;
         //System.out.println("changing the pseudo");
         //UDP.broadcast("toto", InetAddress.getByName("255.255.255.255"));
+    }
+
+    public void changePseudo(String str) throws IOException {
+        UDP.broadcast("end" , InetAddress.getByName("255.255.255.255"));
+        UDP.broadcast(str , InetAddress.getByName("255.255.255.255"));
+        this.pseudo = str;
     }
 
     public String getPseudo() {
