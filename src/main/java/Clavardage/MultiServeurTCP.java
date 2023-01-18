@@ -20,9 +20,7 @@ public class MultiServeurTCP extends Thread{
     private ServerSocket serverSocket;
     private final int port;
     public MultiServeurTCP(int port){this.port = port;}
-    public void stopSocket(){
-        socket.close();
-    }
+
     public void run(){
         try {
         CreateBDD.createNewDatabase("CentralMessages.db");
@@ -39,6 +37,28 @@ public class MultiServeurTCP extends Thread{
     public void close() throws IOException {
         serverSocket.close();
     }
+
+    public static class SendMessage extends Thread {
+        final private Socket clientSocket;
+        final private PrintWriter out;
+        final private String Message;
+
+        public SendMessage(Socket clientSocket, PrintWriter out,String Message) {
+            this.clientSocket = clientSocket;
+            this.out = out;
+            this.Message=Message;
+            }
+
+            public void run() {
+                    Insert app = new Insert();
+                    Date date = new Date();
+                    out.println(Message);
+                    app.insert("Pascal",new Message("PASCAL", Message,new Timestamp(date.getTime())) );
+                    System.out.println(Message);
+
+                }
+            }
+
 
     private static class ClientHandler extends Thread{
         private final Socket clientSocket;
@@ -91,6 +111,7 @@ public class MultiServeurTCP extends Thread{
                 }
             }
         }
+
 
 
 

@@ -12,7 +12,7 @@
          </image>
       </ImageView>
       <Button fx:id="logoutButton" layoutX="461.0" layoutY="312.0" mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="120.0" text="Log out" />
-      <Button fx:id="changeUsernameButton" layoutX="298.0" layoutY="312.0" mnemonicParsing="false" onAction="#changeUsername" prefHeight="25.0" prefWidth="157.0" text="Change username" />
+      <Button fx:id="changeUsernameButton" layoutX="298.0" layoutY="312.0" mnemonicParsing="false" onAction="#changeUsername" onDragOver="#setVisible" prefHeight="25.0" prefWidth="157.0" text="Change username" />
       <AnchorPane layoutX="7.0" layoutY="8.0" prefHeight="200.0" prefWidth="151.0">
          <children>
             <TableView fx:id="onlineUsersList" layoutX="1.0" layoutY="20.0" prefHeight="263.0" prefWidth="151.0">
@@ -30,5 +30,6 @@
           <TableColumn fx:id="messages" prefWidth="396.0" />
         </columns>
       </TableView>
+      <TextField fx:id="userNameFieled" layoutX="118.0" layoutY="312.0" promptText="Enter new user name" visible="false" />
    </children>
 </AnchorPane>

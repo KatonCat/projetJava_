@@ -42,6 +42,10 @@ public class StartSession {
         }
     }
 
+    public static void SendMessage(String msg){
+
+    }
+
     public static void StartSession(InetAddress addr ) throws IOException, UserNotFoundException {
 
         BDD.createNewTable(Ecoute.liste.getUserByAdd(addr).getUserName());

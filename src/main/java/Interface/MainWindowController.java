@@ -65,6 +65,9 @@ public class MainWindowController {
     private TableView<Message> messagesTable;
 
     @FXML
+    private TextField userNameFieled;
+
+    @FXML
     private TableColumn<Message, String> messages;
     private String message;
 
@@ -95,7 +98,10 @@ public class MainWindowController {
 
         }
 
-
+    @FXML
+    void setVisible(ActionEvent event) {
+        userNameFieled.setVisible(true);
+    }
 
     @FXML
     void changeUsername(ActionEvent event) throws IOException {
