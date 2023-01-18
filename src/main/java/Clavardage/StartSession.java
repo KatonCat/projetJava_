@@ -68,11 +68,12 @@ public class StartSession {
             //ListeMsg.addMsg(new Message("Juan",msg, new Timestamp(date.getTime())));
             if(msg.equals("end1")){
                 Oreille.interrupt();
+                System.out.println("La connexion est finie");
             }}
         }).start();
 
         //client.stopConnexion();
-        System.out.println("La connexion est finie");
+
 
     }
 }

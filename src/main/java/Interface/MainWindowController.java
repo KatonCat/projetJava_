@@ -3,6 +3,7 @@ package Interface;
 import BDD.Select;
 import Clavardage.ListOfMessages;
 import Clavardage.Message;
+import Clavardage.MultiServeurTCP;
 import Clavardage.StartSession;
 import ConnexionExceptions.UserNotFoundException;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,6 +25,7 @@ import Connexion.RemoteUser;
 import Connexion.UserList;
 
 
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -37,6 +39,10 @@ public class MainWindowController {
     private static MainWindowController instance;
     private Stage stage;
     private Scene scene;
+
+    @FXML
+    private TextField messageUtil;
+
     @FXML
     private Button changeUsernameButton;
 
@@ -58,7 +64,9 @@ public class MainWindowController {
     @FXML
     private TableView<Message> messagesTable;
 
+    @FXML
     private TableColumn<Message, String> messages;
+    private String message;
 
     @FXML
     private void initialize() {
@@ -70,10 +78,12 @@ public class MainWindowController {
         onlineUsersList.setOnMouseClicked(event ->{
            RemoteUser selectedUser = onlineUsersList.getSelectionModel().getSelectedItem();
                 if (selectedUser != null){
-                    try { StartSession.StartSession(selectedUser.getAdd());
-                        java.util.Date date = new Date();
-                        Select.selectAll(selectedUser.getUserName()).addMsg(new Message(selectedUser.getUserName(),"hello", new Timestamp(date.getTime())));
-                        Select.selectAll(selectedUser.getUserName()).getMessage().get(0);
+                    try {
+                        StartSession.StartSession(selectedUser.getAdd());
+                        Select.selectAll(""+selectedUser.getUserName());
+                        //java.util.Date date = new Date();
+                        //Select.selectAll(selectedUser.getUserName()).addMsg(new Message(selectedUser.getUserName(),"hello", new Timestamp(date.getTime())));
+                        //Select.selectAll(selectedUser.getUserName()).getMessage().get(0);
 
 
 
@@ -86,10 +96,6 @@ public class MainWindowController {
         }
 
 
-    @FXML
-    void CreateGroup(ActionEvent event) {
-
-    }
 
     @FXML
     void changeUsername(ActionEvent event) throws IOException {
@@ -101,7 +107,9 @@ public class MainWindowController {
 
     @FXML
     void logout(ActionEvent event) throws IOException {
-        Ecoute ecoute = (Ecoute) App.getStage().getUserData();
+        SceneData sd = (SceneData) App.getStage().getUserData();
+        Ecoute ecoute = sd.getData1();
+        MultiServeurTCP server = sd.getData2();
         UDP.broadcast("end" , InetAddress.getByName("255.255.255.255"));
         ecoute.stop();
         ecoute.stopSocket();
@@ -109,6 +117,8 @@ public class MainWindowController {
         Connexion co = ecoute.getConnexion() ;
         co = null;
         ecoute = null;
+        server.close();
+
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("welcome.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -120,7 +130,7 @@ public class MainWindowController {
 
     @FXML
     void SendMessage(ActionEvent event) {
-
+        message = messageUtil.getText();
     }
 
 

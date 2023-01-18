@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Timestamp;
@@ -15,9 +16,13 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class MultiServeurTCP extends Thread{
+    private DatagramSocket socket;
     private ServerSocket serverSocket;
     private final int port;
     public MultiServeurTCP(int port){this.port = port;}
+    public void stopSocket(){
+        socket.close();
+    }
     public void run(){
         try {
         CreateBDD.createNewDatabase("CentralMessages.db");

@@ -84,13 +84,16 @@ public class WelcomeControler {
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("mainWindow.fxml"));
             stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            stage.setUserData(ecoute);
             stage.setTitle("home - "+connexion.getPseudo());
             scene = new Scene(fxmlLoader.load(),580, 340);
             stage.setScene(scene);
             stage.show();
-            MultiServeurTCP Server = new MultiServeurTCP(1769);
-            Server.start();
+            MultiServeurTCP server = new MultiServeurTCP(1769);
+            server.start();
+
+            stage.setUserData(new SceneData(ecoute ,server));
+
+            //stage.setUserData(Server);
 
             //System.out.println("username available la liste est"+ ((Ecoute.liste).getids()));
 
