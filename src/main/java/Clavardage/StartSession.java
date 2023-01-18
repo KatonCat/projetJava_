@@ -1,12 +1,16 @@
 package Clavardage;
 import BDD.BDD;
 import BDD.Insert;
+import Connexion.Ecoute;
+import Connexion.RemoteUser;
+import ConnexionExceptions.UserNotFoundException;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Scanner;
-
+import BDD.Select;
 public class StartSession {
 
 
@@ -38,10 +42,10 @@ public class StartSession {
         }
     }
 
-    public static void StartSession(InetAddress addr) throws IOException{
+    public static void StartSession(InetAddress addr ) throws IOException, UserNotFoundException {
 
-        BDD.createNewTable("Adama");
-        ListOfMessages ListeMsg= new ListOfMessages();
+        BDD.createNewTable(Ecoute.liste.getUserByAdd(addr).getUserName());
+        //ListOfMessages ListeMsg= Select.selectAll();
         Scanner entreeClavier = new Scanner(System.in);
         clientTCP client = new clientTCP();
         client.startConnexion(addr, 1769);
@@ -50,12 +54,13 @@ public class StartSession {
         String response = client.rcvMessage();
         System.out.println(addr.toString()+" : "+response);
 
-        Insert app = new Insert();
 
-        ClientEcoute Oreille = new ClientEcoute(client);
-        Oreille.start();
-        String msg;
-        while(!Oreille.isInterrupted() ^ !Oreille.isAlive()){
+        new Thread(() -> {
+            Insert app = new Insert();
+            ClientEcoute Oreille = new ClientEcoute(client);
+            Oreille.start();
+            String msg;
+            while(!Oreille.isInterrupted() ^ !Oreille.isAlive()){
             msg = entreeClavier.nextLine();
             client.sendMessage(msg);
             Date date = new Date();
@@ -63,9 +68,11 @@ public class StartSession {
             //ListeMsg.addMsg(new Message("Juan",msg, new Timestamp(date.getTime())));
             if(msg.equals("end1")){
                 Oreille.interrupt();
-            }
-        }
+            }}
+        }).start();
+
+        //client.stopConnexion();
         System.out.println("La connexion est finie");
-        client.stopConnexion();
+
     }
 }

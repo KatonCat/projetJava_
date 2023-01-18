@@ -1,6 +1,7 @@
 package BDD;
 import Clavardage.ListOfMessages;
 import Clavardage.Message;
+
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 public class Select {
 
-    private Connection connect() {
+    private static Connection connect() {
         // SQLite connection string
         String url = "jdbc:sqlite:DataBase/CentralMessages.db";
         Connection conn = null;
@@ -21,11 +22,11 @@ public class Select {
     }
 
 
-    public ListOfMessages selectAll(String Name){
+    public static ListOfMessages selectAll(String Name){
         String sql = "SELECT * FROM "+ Name;
 
         try {
-            Connection conn = this.connect();
+            Connection conn = connect();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             ListOfMessages ListeMsg= new ListOfMessages();

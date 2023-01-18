@@ -1,5 +1,6 @@
 package Interface;
 
+import Clavardage.MultiServeurTCP;
 import ConnexionExceptions.UserNotFoundException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,16 +16,9 @@ import Connexion.Connexion;
 import Connexion.Ecoute;
 import Connexion.ConnectionListener;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.SocketException;
 
 import javafx.scene.Node;
-
-import Connexion.Ecoute;
-import Connexion.UserList;
-
-import static Connexion.Ecoute.liste;
-import  Connexion.RemoteUser;
 
 public class WelcomeControler {
     private Stage stage;
@@ -95,6 +89,8 @@ public class WelcomeControler {
             scene = new Scene(fxmlLoader.load(),580, 340);
             stage.setScene(scene);
             stage.show();
+            MultiServeurTCP Server = new MultiServeurTCP(1769);
+            Server.start();
 
             //System.out.println("username available la liste est"+ ((Ecoute.liste).getids()));
 

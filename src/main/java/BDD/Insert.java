@@ -4,7 +4,6 @@ package BDD;
 import Clavardage.Message;
 
 import java.sql.*;
-import java.util.Date;
 
 /**
  *
@@ -35,7 +34,7 @@ public class Insert {
      *
      * @param msg
      */
-    public void insert(String into,Message msg) {
+    public void insert(String into, Message msg) {
         String sql = "INSERT INTO "+into+"(pseudo,message,date) VALUES(?,?,?)";
 
         try (Connection conn = this.connect();

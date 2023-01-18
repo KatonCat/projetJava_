@@ -58,17 +58,8 @@ public class Ecoute extends Thread {
             String received = new String(packet.getData(), 0, packet.getLength());
 
 
-            try {
-                Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-                NetworkInterface eth = en.nextElement();
-                InterfaceAddress ia = eth.getInterfaceAddresses().get(1);
-                myIPadd=ia.getAddress();
-                System.out.println(""+myIPadd);
 
-            } catch (SocketException e) {
-
-            }
-            if (address.equals(myIPadd) ) {
+            if (isMyAddress(address) ) {
                 if (liste.lengthListe()==0){
                     listener.validID();
                     System.out.println("ya personne");}
@@ -164,6 +155,29 @@ public class Ecoute extends Thread {
 
         socket.close();
     }
+
+    public boolean isMyAddress(InetAddress addr){
+        try {
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = networkInterfaces.nextElement();
+                Enumeration<InetAddress> innetaddresses = networkInterface.getInetAddresses();
+                while(innetaddresses.hasMoreElements()){
+                    InetAddress inetAddress = innetaddresses.nextElement();
+                    if (inetAddress.equals(addr)){
+                        return true;
+                    }
+                }
+            }
+
+
+        } catch (SocketException e) {
+
+        }
+        return false;
+
+    }
+
 
 
 }

@@ -43,7 +43,7 @@ public class BDD {
         }
     }
 
-    public static void insert(String into,Message msg) {
+    public static void insert(String into, Message msg) {
         String sql = "INSERT INTO "+into+"(pseudo,message,date) VALUES(?,?,?)";
         String url = "jdbc:sqlite:DataBase/CentralMessages.db";
         try (Connection conn = DriverManager.getConnection(url);

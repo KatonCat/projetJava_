@@ -3,6 +3,7 @@ import Connexion.Connexion;
 import Connexion.Ecoute;
 import Connexion.RemoteUser;
 import Connexion.ConnectionListener;
+import ConnexionExceptions.UserNotFoundException;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -10,7 +11,7 @@ import java.net.InetAddress;
 import static Connexion.Ecoute.liste;
 
 public class mainTest {
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, UserNotFoundException {
         /*RemoteUser u1 = new RemoteUser("toto" , InetAddress.getByName("25.25.78.168") );
         liste.addUser(u1);
         System.out.println("la liste est "+liste);

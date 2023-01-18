@@ -1,5 +1,10 @@
 package Interface;
 
+import BDD.Select;
+import Clavardage.ListOfMessages;
+import Clavardage.Message;
+import Clavardage.StartSession;
+import ConnexionExceptions.UserNotFoundException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +18,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import Connexion.Ecoute;
 import Connexion.UDP;
-import Clavardage.StartSession;
 
 import Connexion.Connexion;
 import Connexion.RemoteUser;
@@ -24,7 +28,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 
 public class MainWindowController {
@@ -50,6 +55,10 @@ public class MainWindowController {
     @FXML
     private Button sendButton;
 
+    @FXML
+    private TableView<Message> messagesTable;
+
+    private TableColumn<Message, String> messages;
 
     @FXML
     private void initialize() {
@@ -61,9 +70,14 @@ public class MainWindowController {
         onlineUsersList.setOnMouseClicked(event ->{
            RemoteUser selectedUser = onlineUsersList.getSelectionModel().getSelectedItem();
                 if (selectedUser != null){
-                    try {
-                        StartSession.StartSession(selectedUser.getAdd());
-                    } catch (IOException e) {
+                    try { StartSession.StartSession(selectedUser.getAdd());
+                        java.util.Date date = new Date();
+                        Select.selectAll(selectedUser.getUserName()).addMsg(new Message(selectedUser.getUserName(),"hello", new Timestamp(date.getTime())));
+                        Select.selectAll(selectedUser.getUserName()).getMessage().get(0);
+
+
+
+                    } catch (IOException | UserNotFoundException e) {
                         e.printStackTrace();
                     }
                 }

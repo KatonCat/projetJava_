@@ -1,10 +1,8 @@
+import BDD.*;
 import Clavardage.ListOfMessages;
 import Clavardage.Message;
-
-import BDD.*;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 import static org.junit.Assert.assertEquals;
