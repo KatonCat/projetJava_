@@ -68,6 +68,9 @@ public class MainWindowController {
     private TextField userNameFieled;
 
     @FXML
+    private TextField newUserName;
+
+    @FXML
     private TableColumn<Message, String> messages;
     private String message;
 
@@ -105,10 +108,12 @@ public class MainWindowController {
 
     @FXML
     void changeUsername(ActionEvent event) throws IOException {
-        //Ecoute ecoute = (Ecoute) App.getStage().getUserData();
-        //String userName = userNameText.getText();
-        //ecoute.getConnexion().changePseudo("titi");
-        //App.getStage().setTitle("home -titi");
+        SceneData sd = (SceneData) App.getStage().getUserData();
+        Ecoute ecoute = sd.getData1();
+        Ecoute.liste =  new UserList();
+        String userName = newUserName.getText();
+        ecoute.getConnexion().changePseudo(userName);
+        App.getStage().setTitle("home -"+userName);
     }
 
     @FXML

@@ -23,11 +23,11 @@ public class Connexion{
         //UDP.broadcast("toto", InetAddress.getByName("255.255.255.255"));
     }
 
-    /*public void changePseudo(String str) throws IOException {
+    public void changePseudo(String str) throws IOException {
         UDP.broadcast("end" , InetAddress.getByName("255.255.255.255"));
         UDP.broadcast(str , InetAddress.getByName("255.255.255.255"));
         this.pseudo = str;
-    }*/
+    }
 
     public String getPseudo() {
         return this.pseudo;
