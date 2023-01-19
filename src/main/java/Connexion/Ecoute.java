@@ -1,5 +1,6 @@
 package Connexion;
 
+import BDD.BDD;
 import ConnexionExceptions.UserNotFoundException;
 
 import java.io.IOException;
@@ -97,9 +98,11 @@ public class Ecoute extends Thread {
                 }
 
                 else if (received.startsWith("Bienvenue mon id est :")) {
+
                     System.out.println("binvenue mon id est");
                     listener.validID();
                     String id = received.replace("Bienvenue mon id est :", "");
+                    BDD.createNewTable("CentralMessages" , id );
                     liste.addUser(new RemoteUser(id , address));
                     try {
                         System.out.println("la liste est "+liste.getids());
@@ -141,7 +144,7 @@ public class Ecoute extends Thread {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
+                    BDD.createNewTable("CentralMessages" , received );
                     System.out.println(""+connexion.getPseudo());
                 }
 

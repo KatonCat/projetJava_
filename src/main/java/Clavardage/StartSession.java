@@ -1,12 +1,15 @@
 package Clavardage;
-import Connexion.Ecoute;
-import ConnexionExceptions.UserNotFoundException;
 import BDD.BDD;
+import BDD.Insert;
+import ConnexionExceptions.UserNotFoundException;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Scanner;
+
+import static Connexion.Ecoute.liste;
 
 public class StartSession extends Thread{
     private InetAddress addr;
@@ -14,11 +17,12 @@ public class StartSession extends Thread{
     private clientTCP client = new clientTCP();
     public StartSession(InetAddress addr) throws UserNotFoundException {
         this.addr = addr;
-        this.pseudo= Ecoute.liste.getUserByAdd(addr).getUserName();
+        //this.pseudo= liste.getUserByAdd(addr).getUserName();
     }
     public clientTCP getClient(){
         return this.client;
     }
+    public InetAddress getAddress(){return this.addr;}
 
 
 
@@ -53,9 +57,9 @@ public class StartSession extends Thread{
 
     public  void run(){
 
-        BDD.createNewTable("CentralMessages", addr.getHostAddress()+pseudo);
+        //BDD.createNewTable("CentralMessages", addr.getHostAddress()+pseudo);
         ListOfMessages ListeMsg= new ListOfMessages();
-        //Scanner entreeClavier = new Scanner(System.in);
+        Scanner entreeClavier = new Scanner(System.in);
         try {
             client.startConnexion(addr, 1769);
 
@@ -72,8 +76,7 @@ public class StartSession extends Thread{
                 }
                 System.out.println(MsgRecu);
                 MsgRecu = client.rcvMessage();
-                Date date = new Date();
-                ListeMsg.addMsg(new Message(pseudo,MsgRecu, new Timestamp(date.getTime())));
+                //ListeMsg.addMsg(new Message("Juan",msg, new Timestamp(date.getTime())));
             }
 
             /*ClientEcoute Oreille = new ClientEcoute(client);

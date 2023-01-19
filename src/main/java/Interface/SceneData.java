@@ -2,13 +2,14 @@ package Interface;
 
 
 import Clavardage.MultiServeurTCP;
+import Clavardage.ServeurTCP;
 import Connexion.Ecoute;
 
 public class SceneData {
     private Ecoute data1;
-    private MultiServeurTCP data2;
+    private ServeurTCP data2;
 
-    public SceneData(Ecoute data1, MultiServeurTCP data2) {
+    public SceneData(Ecoute data1, ServeurTCP data2) {
         this.data1 = data1;
         this.data2 = data2;
     }
@@ -18,7 +19,7 @@ public class SceneData {
         return data1;
     }
 
-    public MultiServeurTCP getData2() {
+    public ServeurTCP getData2() {
         return data2;
     }
 }

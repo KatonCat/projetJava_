@@ -1,5 +1,7 @@
 package Clavardage;
 
+import BDD.BDD;
+import BDD.CreateBDD;
 import BDD.Insert;
 import ConnexionExceptions.UserNotFoundException;
 
@@ -10,8 +12,10 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Scanner;
+import static Connexion.Ecoute.liste;
 
 public class MultiServeurTCP extends Thread{
     private ServerSocket serverSocket;

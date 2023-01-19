@@ -28,6 +28,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 
@@ -90,7 +92,7 @@ public class MainWindowController {
                         msgs = FXCollections.observableArrayList();
                         messagesTable.setItems(msgs);
                         messages.setCellValueFactory(cellData -> new SimpleStringProperty( cellData.getValue().getUserName() +" "+ cellData.getValue().getMsg() + " "  +cellData.getValue().getDateTS()));
-                        messagesTable.setItems( anciensMessages.getMessage());
+                        messagesTable.setItems( anciensMessages.getMessage() );
 
                         //StartSession.StartSession(selectedUser.getAdd());
 
@@ -127,7 +129,7 @@ public class MainWindowController {
     void logout(ActionEvent event) throws IOException {
         SceneData sd = (SceneData) App.getStage().getUserData();
         Ecoute ecoute = sd.getData1();
-        MultiServeurTCP server = sd.getData2();
+        ServeurTCP server = sd.getData2();
         UDP.broadcast("end" , InetAddress.getByName("255.255.255.255"));
         ecoute.stop();
         ecoute.stopSocket();
@@ -147,10 +149,13 @@ public class MainWindowController {
     }
 
     @FXML
-    void SendMessage(ActionEvent event) {
+    void SendMessage(ActionEvent event) throws UserNotFoundException {
+        SceneData sd = (SceneData) App.getStage().getUserData();
+        Ecoute ecoute = sd.getData1();
         clientTCP client = session.getClient();
         message = messageUtil.getText();
         client.sendMessage(message);
+        BDD.insert("CentralMessages", Ecoute.liste.getUserByAdd(session.getAddress()).getUserName(), new Message(ecoute.getConnexion().getPseudo() , message , new Timestamp(System.currentTimeMillis()) ));
     }
 
 

@@ -1,5 +1,4 @@
 package Clavardage;
-import Connexion.RemoteUser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -8,8 +7,7 @@ import java.util.List;
 
 public class ListOfMessages {
 
-    private ObservableList<Message> message = FXCollections.observableArrayList();
-
+    private ObservableList<Message> message =  FXCollections.observableArrayList();
 
     public void addMsg(Message msg) {
         message.add(msg);

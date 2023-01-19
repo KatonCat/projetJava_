@@ -2,8 +2,11 @@ BDD/CreateBDD.class
 BDD/BDD.class
 Clavardage/MultiServeurTCP.class
 BDD/Insert.class
+Clavardage/ServeurTCP.class
 Clavardage/MultiServeurTCP$ClientHandler$ServEcoute.class
 Clavardage/StartSession.class
 BDD/Select.class
 Interface/MainWindowController.class
+Clavardage/ThreadList.class
+Clavardage/ServeurTCP$ClientHandler.class
 Clavardage/MultiServeurTCP$ClientHandler.class

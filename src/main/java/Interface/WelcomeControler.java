@@ -1,6 +1,7 @@
 package Interface;
 
 import Clavardage.MultiServeurTCP;
+import Clavardage.ServeurTCP;
 import ConnexionExceptions.UserNotFoundException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -88,7 +89,7 @@ public class WelcomeControler {
             scene = new Scene(fxmlLoader.load(),580, 340);
             stage.setScene(scene);
             stage.show();
-            MultiServeurTCP server = new MultiServeurTCP(1769);
+            ServeurTCP server = new ServeurTCP(1769);
             server.start();
 
             stage.setUserData(new SceneData(ecoute ,server));
