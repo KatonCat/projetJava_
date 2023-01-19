@@ -1,14 +1,7 @@
-import Clavardage.StartSession;
-import Connexion.Connexion;
-import Connexion.Ecoute;
-import Connexion.RemoteUser;
-import Connexion.ConnectionListener;
 import ConnexionExceptions.UserNotFoundException;
 
 import java.io.IOException;
 import java.net.InetAddress;
-
-import static Connexion.Ecoute.liste;
 
 public class mainTest {
     public static void main(String args[]) throws IOException, UserNotFoundException {
@@ -29,7 +22,7 @@ public class mainTest {
         };*/
        // new Ecoute(conn, listener).start();
 
-        StartSession.StartSession(InetAddress.getByName("127.0.0.1"));
+        //StartSession.StartSession(InetAddress.getByName("127.0.0.1"));
 
         //conn.verifyId("toto");
         //System.out.println("pseudo : " + conn.getPseudo());

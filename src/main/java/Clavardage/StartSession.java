@@ -1,20 +1,29 @@
 package Clavardage;
-import BDD.BDD;
-import BDD.Insert;
 import Connexion.Ecoute;
-import Connexion.RemoteUser;
 import ConnexionExceptions.UserNotFoundException;
-
+import BDD.BDD;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Scanner;
-import BDD.Select;
-public class StartSession {
+
+public class StartSession extends Thread{
+    private InetAddress addr;
+    private String pseudo;
+    private clientTCP client = new clientTCP();
+    public StartSession(InetAddress addr) throws UserNotFoundException {
+        this.addr = addr;
+        this.pseudo= Ecoute.liste.getUserByAdd(addr).getUserName();
+    }
+    public clientTCP getClient(){
+        return this.client;
+    }
 
 
-    public static class ClientEcoute extends Thread {
+
+
+    /*public static class ClientEcoute extends Thread {
         private final clientTCP client;
         public ClientEcoute(clientTCP client){
             this.client=client;
@@ -28,7 +37,7 @@ public class StartSession {
                 if(MsgRecu.equals("end1")) {
                     this.interrupt();
                     System.out.println("La connexion est finie, veuillez appuyer sur entrée");
-                };
+                }
                 System.out.println(MsgRecu);
                 MsgRecu = client.rcvMessage();
                 //ListeMsg.addMsg(new Message("Juan",msg, new Timestamp(date.getTime())));
@@ -40,44 +49,52 @@ public class StartSession {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
-    public static void SendMessage(String msg){
+    public  void run(){
 
-    }
+        BDD.createNewTable("CentralMessages", addr.getHostAddress()+pseudo);
+        ListOfMessages ListeMsg= new ListOfMessages();
+        //Scanner entreeClavier = new Scanner(System.in);
+        try {
+            client.startConnexion(addr, 1769);
 
-    public static void StartSession(InetAddress addr ) throws IOException, UserNotFoundException {
+            client.sendMessage("hello dude");
+            String response = client.rcvMessage();
+            System.out.println(addr.getHostAddress() + " : " + response);
+            String MsgRecu;
+            MsgRecu = client.rcvMessage();
 
-        BDD.createNewTable(Ecoute.liste.getUserByAdd(addr).getUserName());
-        //ListOfMessages ListeMsg= Select.selectAll();
-        Scanner entreeClavier = new Scanner(System.in);
-        clientTCP client = new clientTCP();
-        client.startConnexion(addr, 1769);
+            while (!this.isInterrupted()) {
+                if(MsgRecu.equals("end1")) {
+                    this.interrupt();
+                    System.out.println("La connexion est finie, veuillez appuyer sur entrée");
+                }
+                System.out.println(MsgRecu);
+                MsgRecu = client.rcvMessage();
+                Date date = new Date();
+                ListeMsg.addMsg(new Message(pseudo,MsgRecu, new Timestamp(date.getTime())));
+            }
 
-        client.sendMessage("hello dude");
-        String response = client.rcvMessage();
-        System.out.println(addr.toString()+" : "+response);
-
-
-        new Thread(() -> {
-            Insert app = new Insert();
-            ClientEcoute Oreille = new ClientEcoute(client);
+            /*ClientEcoute Oreille = new ClientEcoute(client);
             Oreille.start();
             String msg;
-            while(!Oreille.isInterrupted() ^ !Oreille.isAlive()){
-            msg = entreeClavier.nextLine();
-            client.sendMessage(msg);
-            Date date = new Date();
-            app.insert("ADAMA",new Message(addr.getHostAddress(), msg,new Timestamp(date.getTime())) );
-            //ListeMsg.addMsg(new Message("Juan",msg, new Timestamp(date.getTime())));
-            if(msg.equals("end1")){
-                Oreille.interrupt();
-                System.out.println("La connexion est finie");
-            }}
-        }).start();
+            while (!Oreille.isInterrupted() ^ !Oreille.isAlive()) {
+                msg = entreeClavier.nextLine();
+                client.sendMessage(msg);
+                Date date = new Date();
+                //BDD.insert("CentralMessages", addr.getHostAddress()+pseudo, new Message(addr.getHostAddress(), msg, new Timestamp(date.getTime())));
+                //ListeMsg.addMsg(new Message("Juan",msg, new Timestamp(date.getTime())));
+                if (msg.equals("end1")) {
+                    Oreille.interrupt();
+                }
+            }*/
+            System.out.println("La connexion est finie");
+            client.stopConnexion();
 
-        //client.stopConnexion();
-
-
+        }catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Could not connect.");
+        }
     }
 }

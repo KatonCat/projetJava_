@@ -1,6 +1,7 @@
 ConnexionExceptions/PseudoIndisponibleException.class
 BDD/CreateBDD.class
 Connexion/Ecoute.class
+Interface/SceneData.class
 ConnexionExceptions/UserNotFoundException.class
 Connexion/RemoteUser.class
 Interface/WelcomeControler$1.class
@@ -26,4 +27,3 @@ Clavardage/Message.class
 Clavardage/MultiServeurTCP$ClientHandler.class
 Connexion/UserList.class
 Interface/App.class
-Clavardage/StartSession$ClientEcoute.class

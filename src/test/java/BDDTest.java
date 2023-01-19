@@ -12,7 +12,7 @@ public class BDDTest {
     @Test
     public void TestBDD() {
         BDD.createNewDatabase("Test.db");
-        BDD.createNewTable("Test");
+        BDD.createNewTable("Test","Test");
         Insert app = new Insert();
         Date date = new Date();
         Timestamp ts = new Timestamp(date.getTime());

@@ -1,30 +1,26 @@
 package Clavardage;
 
-import BDD.BDD;
-import BDD.CreateBDD;
 import BDD.Insert;
+import ConnexionExceptions.UserNotFoundException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Scanner;
 
 public class MultiServeurTCP extends Thread{
-    private DatagramSocket socket;
     private ServerSocket serverSocket;
     private final int port;
     public MultiServeurTCP(int port){this.port = port;}
-
     public void run(){
         try {
-        CreateBDD.createNewDatabase("CentralMessages.db");
-        serverSocket = new ServerSocket(port);
+            //BDD.createNewDatabase("CentralMessages.db");
+            serverSocket = new ServerSocket(port);
 
             while(true) {
                 new ClientHandler(serverSocket.accept()).start();
@@ -38,28 +34,6 @@ public class MultiServeurTCP extends Thread{
         serverSocket.close();
     }
 
-    public static class SendMessage extends Thread {
-        final private Socket clientSocket;
-        final private PrintWriter out;
-        final private String Message;
-
-        public SendMessage(Socket clientSocket, PrintWriter out,String Message) {
-            this.clientSocket = clientSocket;
-            this.out = out;
-            this.Message=Message;
-            }
-
-            public void run() {
-                    Insert app = new Insert();
-                    Date date = new Date();
-                    out.println(Message);
-                    app.insert("Pascal",new Message("PASCAL", Message,new Timestamp(date.getTime())) );
-                    System.out.println(Message);
-
-                }
-            }
-
-
     private static class ClientHandler extends Thread{
         private final Socket clientSocket;
         private PrintWriter out;
@@ -72,10 +46,14 @@ public class MultiServeurTCP extends Thread{
         public static class ServEcoute extends Thread {
             final private Socket clientSocket;
             final private PrintWriter out;
-
-            public ServEcoute(Socket clientSocket, PrintWriter out) {
+            final private InetAddress addr;
+            //final private String pseudo;
+            public ServEcoute(Socket clientSocket, PrintWriter out) throws UserNotFoundException {
                 this.clientSocket = clientSocket;
                 this.out = out;
+                this.addr=clientSocket.getInetAddress();
+                //this.pseudo= liste.getUserByAdd(addr).getUserName() ;
+
             }
 
             public void run() {
@@ -83,14 +61,12 @@ public class MultiServeurTCP extends Thread{
                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     String msgRecu;
 
-                    Insert app = new Insert();
-
 
                     while (!this.isInterrupted()) {
 
                         if ((msgRecu = in.readLine()) == null) break;
                         Date date = new Date();
-                        app.insert("Pascal",new Message("PASCAL", msgRecu,new Timestamp(date.getTime())) );
+                        //BDD.insert("CentralMessages", addr.getHostAddress()+pseudo, new Message(pseudo, msgRecu,new Timestamp(date.getTime())) );
 
                         System.out.println(msgRecu);
                         if ("hello dude".equals(msgRecu)) {
@@ -114,9 +90,8 @@ public class MultiServeurTCP extends Thread{
 
 
 
-
-        public void init() throws IOException {
-            BDD.createNewTable("Pascal");
+        public void init() throws IOException, UserNotFoundException {
+            //BDD.createNewTable("CentralMessages","Pascal");
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             ServEcoute Oreille = new ServEcoute(clientSocket,out);
@@ -131,8 +106,8 @@ public class MultiServeurTCP extends Thread{
 
             while (!Oreille.isInterrupted()) {
                 Smsg = entreeClavier.nextLine();
-                 out.println(Smsg);
-                app.insert("Pascal",new Message("Moi", Smsg,new Timestamp(date.getTime())) );
+                out.println(Smsg);
+                //app.insert("Pascal",new Message("Moi", Smsg,new Timestamp(date.getTime())) );
                 if (Smsg.equals("end1")){
                     Oreille.interrupt();
                     break;
@@ -150,7 +125,7 @@ public class MultiServeurTCP extends Thread{
                 in.close();
                 out.close();
                 clientSocket.close();
-            } catch (IOException e) {
+            } catch (IOException | UserNotFoundException e) {
                 System.err.println("Could not initialize.");
                 e.printStackTrace();
             }

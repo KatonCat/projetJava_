@@ -1,5 +1,6 @@
 package Clavardage;
 
+import java.net.InetAddress;
 import java.sql.Timestamp;
 
 public class Message {

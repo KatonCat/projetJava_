@@ -1,10 +1,8 @@
 package Interface;
 
+import BDD.*;
 import BDD.Select;
-import Clavardage.ListOfMessages;
-import Clavardage.Message;
-import Clavardage.MultiServeurTCP;
-import Clavardage.StartSession;
+import Clavardage.*;
 import ConnexionExceptions.UserNotFoundException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -30,16 +28,17 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.sql.Timestamp;
-import java.util.Date;
+import java.util.List;
 
 
 public class MainWindowController {
     public static ObservableList<RemoteUser> items;
+    public static ObservableList<Message> msgs;
+
     private static MainWindowController instance;
     private Stage stage;
     private Scene scene;
-
+    private StartSession session;
     @FXML
     private TextField messageUtil;
 
@@ -85,15 +84,23 @@ public class MainWindowController {
            RemoteUser selectedUser = onlineUsersList.getSelectionModel().getSelectedItem();
                 if (selectedUser != null){
                     try {
-                        StartSession.StartSession(selectedUser.getAdd());
-                        Select.selectAll(""+selectedUser.getUserName());
+                        session = new StartSession(selectedUser.getAdd());
+                        session.start();
+                        ListOfMessages anciensMessages =  BDD.select("CentralMessages",selectedUser.getUserName());
+                        msgs = FXCollections.observableArrayList();
+                        messagesTable.setItems(msgs);
+                        messages.setCellValueFactory(cellData -> new SimpleStringProperty( cellData.getValue().getUserName() +" "+ cellData.getValue().getMsg() + " "  +cellData.getValue().getDateTS()));
+                        messagesTable.setItems( anciensMessages.getMessage());
+
+                        //StartSession.StartSession(selectedUser.getAdd());
+
                         //java.util.Date date = new Date();
                         //Select.selectAll(selectedUser.getUserName()).addMsg(new Message(selectedUser.getUserName(),"hello", new Timestamp(date.getTime())));
                         //Select.selectAll(selectedUser.getUserName()).getMessage().get(0);
 
 
 
-                    } catch (IOException | UserNotFoundException e) {
+                    } catch (UserNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -141,7 +148,9 @@ public class MainWindowController {
 
     @FXML
     void SendMessage(ActionEvent event) {
+        clientTCP client = session.getClient();
         message = messageUtil.getText();
+        client.sendMessage(message);
     }
 
 

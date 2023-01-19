@@ -13,6 +13,7 @@ public class SceneData {
         this.data2 = data2;
     }
 
+
     public Ecoute getData1() {
         return data1;
     }
