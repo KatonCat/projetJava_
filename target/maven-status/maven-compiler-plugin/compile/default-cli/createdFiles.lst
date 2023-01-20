@@ -11,16 +11,13 @@ BDD/Insert.class
 Clavardage/clientTCP.class
 Clavardage/MultiServeurTCP$ClientHandler$ServEcoute.class
 Connexion/Connexion.class
-TestClient.class
 mainTest.class
-Clavardage/serveurTCP$ServEcoute.class
 Interface/WelcomeControler.class
 Connexion/ConnectionListener.class
 mainTest2.class
 Clavardage/StartSession.class
 BDD/Select.class
 Clavardage/ListOfMessages.class
-Clavardage/serveurTCP.class
 Connexion/UDP.class
 Interface/MainWindowController.class
 Clavardage/Message.class
