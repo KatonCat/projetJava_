@@ -1,7 +1,6 @@
 package Interface;
 
 
-import Clavardage.MultiServeurTCP;
 import Clavardage.ServeurTCP;
 import Connexion.Ecoute;
 

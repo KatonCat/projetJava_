@@ -1,8 +1,8 @@
 package Interface;
 
-import Clavardage.MultiServeurTCP;
 import Clavardage.ServeurTCP;
 import ConnexionExceptions.UserNotFoundException;
+import DataBase.BDD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,8 +43,6 @@ public class WelcomeControler {
 
     public void connexion(ActionEvent actionEvent) throws IOException, InterruptedException , UserNotFoundException {
         Connexion connexion = new Connexion();
-        //RemoteUser u1 = new RemoteUser("toto" , InetAddress.getByName("25.25.78.168") );
-        //liste.addUser(u1);
 
         ConnectionListener listener = new ConnectionListener() {
 
@@ -85,7 +83,7 @@ public class WelcomeControler {
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("mainWindow.fxml"));
             stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            stage.setTitle("home - "+connexion.getPseudo());
+            stage.setTitle("Home - "+connexion.getPseudo());
             scene = new Scene(fxmlLoader.load(),580, 340);
             stage.setScene(scene);
             stage.show();
@@ -93,16 +91,14 @@ public class WelcomeControler {
             server.start();
 
             stage.setUserData(new SceneData(ecoute ,server));
+            BDD.createNewDatabase("CentralMessages.db");
 
-            //stage.setUserData(Server);
 
-            //System.out.println("username available la liste est"+ ((Ecoute.liste).getids()));
 
         }
         else  {
-            messageToUser.setText("le nom d'utilisateur est deja utilisé veillez rééssayer");
-            //System.out.println("username unvavailable la liste est"+ ((Ecoute.liste).getids()));
-            ecoute.stop();
+            messageToUser.setText("Le nom d'utilisateur est deja utilisé veillez rééssayer");
+            ecoute.interrupt();
             ecoute.stopSocket();
 
 

@@ -1,12 +1,10 @@
 package Clavardage;
 
-import BDD.BDD;
-import BDD.CreateBDD;
-import BDD.Insert;
 import Connexion.Ecoute;
 import ConnexionExceptions.UserNotFoundException;
 import java.io.IOException;
 
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Timestamp;
@@ -15,19 +13,19 @@ public class ServeurTCP extends Thread{
     private ServerSocket serverSocket;
     private final int port;
     public ServeurTCP(int port){this.port = port;}
-    public static ThreadList threadList= new ThreadList();
+    public static ListOfHandlers handlerList= new ListOfHandlers();
+    public static ListOfClients clientList = new ListOfClients();
+    public static ListOfSessions sessionList = new ListOfSessions();
     public void run(){
-        ClientHandler thread;
-        Socket socket;
+        ClientHandler handler;
+
         try {
-            //BDD.createNewDatabase("CentralMessages.db");
             serverSocket = new ServerSocket(port);
-            while(true) {
-                thread = new ClientHandler(socket=serverSocket.accept());
-                thread.start();
-                thread.setName("127.0.0.1");
+            while(!this.isInterrupted()) {
+                handler = new ClientHandler(serverSocket.accept());
+                handler.start();
                 //System.out.println("setname reussi");
-                threadList.addThread(thread);
+                handlerList.addHandler(handler);
                 //System.out.println("add reussi");
 
             }
@@ -38,39 +36,56 @@ public class ServeurTCP extends Thread{
     }
 
     public void close() throws IOException {
+        handlerList.stopAll();
+        System.out.println("handler ok");
+        clientList.stopAll();
+        System.out.println("client ok");
+        sessionList.stopAll();
+        System.out.println("session ok");
         serverSocket.close();
+        System.out.println("server ok");
     }
 
     public static class ClientHandler extends Thread{
         private final Socket clientSocket;
-        private final clientTCP client = new clientTCP();
+        private final ClientTCP client = new ClientTCP();
+        private final InetAddress addr;
+
+        public ListOfMessages listeMsg= new ListOfMessages();
+
 
         public ClientHandler(Socket socket) throws IOException {
             this.clientSocket = socket;
             this.client.getConnexion(this.clientSocket);
+            clientList.addClient(this.client);
+            this.addr=clientSocket.getInetAddress();
         }
-        public clientTCP getClient(){
+        public ClientTCP getClient(){
             return this.client;
         }
 
+        public InetAddress getAddress(){return this.addr;}
+
         public void init() throws IOException, UserNotFoundException {
-            //BDD.createNewTable("CentralMessages","pascal");
-            //System.out.println(addr.getHostAddress() + " : " + response);
+
             String MsgRecu;
             MsgRecu = client.rcvMessage();
-
+            String pseudo = Ecoute.liste.getUserByAdd(addr).getUserName();
+            if ("hello dude".equals(MsgRecu)) {
+                client.sendMessage("hi mate");
+            }
+            MsgRecu = client.rcvMessage();
             while (!this.isInterrupted()) {
-                if ("hello dude".equals(MsgRecu)) {
-                    client.sendMessage("hi mate");
-                }
+
+                System.out.println(MsgRecu);
+                MsgRecu = client.rcvMessage();
                 if(MsgRecu.equals("end1")) {
                     this.interrupt();
                     System.out.println("La connexion est finie, veuillez appuyer sur entrée");
+                    break;
                 }
-                System.out.println(MsgRecu);
-                MsgRecu = client.rcvMessage();
-                BDD.insert("CentralMessages" , Ecoute.liste.getUserByAdd(clientSocket.getInetAddress()).getUserName() ,new Message(Ecoute.liste.getUserByAdd(clientSocket.getInetAddress()).getUserName() , MsgRecu , new Timestamp(System.currentTimeMillis()))  );
-                //ListeMsg.addMsg(new Message("Juan",msg, new Timestamp(date.getTime())));
+                listeMsg.addMsg(new Message(pseudo,MsgRecu,new Timestamp(System.currentTimeMillis())));
+
             }
 
             System.out.println("La connexion est finie");
@@ -83,11 +98,14 @@ public class ServeurTCP extends Thread{
             try {
                 init();
                 client.stopConnexion();
-                clientSocket.close();
+
             } catch (IOException | UserNotFoundException e) {
                 System.err.println("Could not initialize.");
                 e.printStackTrace();
             }
+            System.out.println("yep");
+            if(clientList.findClient(client.getName())!=-1)
+                clientList.delClient(client);
         }
 
     }

@@ -1,19 +1,17 @@
 package Connexion;
 
-import BDD.BDD;
+import DataBase.BDD;
 import ConnexionExceptions.UserNotFoundException;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.Enumeration;
-import java.util.List;
 
-//import static Connexion.Connexion.userName;
 
 public class Ecoute extends Thread {
     InetAddress myIPadd ;
     private DatagramSocket socket;
-    private boolean connecte;
+
     private byte[] buf = new byte[256];
     public static UserList liste = new UserList();
 
@@ -33,16 +31,16 @@ public class Ecoute extends Thread {
 
     public Ecoute(Connexion connexion, ConnectionListener listener) throws SocketException {
         this.listener = listener;
-        socket = new DatagramSocket(UDP.UDP_PORT  );
+        socket = new DatagramSocket(UDP.UDP_PORT);
         this.connexion = connexion ;
         System.out.println("le n de tests");
     }
     //observable 
 
     public void run() {
-        connecte = true;
 
-        while (connecte) {
+
+        while (!this.isInterrupted()) {
 
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             try {
@@ -55,7 +53,6 @@ public class Ecoute extends Thread {
             }
 
             InetAddress address = packet.getAddress();
-            //int port = packet.getPort();
             String received = new String(packet.getData(), 0, packet.getLength());
 
 
@@ -63,13 +60,13 @@ public class Ecoute extends Thread {
             if (isMyAddress(address) ) {
                 if (liste.lengthListe()==0){
                     listener.validID();
-                    System.out.println("ya personne");}
+                    System.out.println("Pas d'utilisateurs");}
                 else{}
             }
 
 
             else{
-                System.out.println("nouveau msg recu: "+received);
+                System.out.println("Nouveau msg recu: "+received);
 
                 if (received.equals("end")) {
 
@@ -82,16 +79,6 @@ public class Ecoute extends Thread {
 
                 }
 
-                /*if(liste.lengthListe()==0 && !received.equals(connexion.getPseudo()) ) {
-                    while (connecte) {
-
-                        System.out.println("la liste est vide mais : "+received);
-                        listener.validID();
-                        liste.addUser(new RemoteUser(received,address));
-                        break;
-
-                    }
-                }*/
 
                 else if (received.equals("Id already used")) {
                     listener.invalidID();
@@ -99,13 +86,12 @@ public class Ecoute extends Thread {
 
                 else if (received.startsWith("Bienvenue mon id est :")) {
 
-                    System.out.println("binvenue mon id est");
+                    System.out.println("Binvenue mon id est");
                     listener.validID();
                     String id = received.replace("Bienvenue mon id est :", "");
-                    BDD.createNewTable("CentralMessages" , id );
                     liste.addUser(new RemoteUser(id , address));
                     try {
-                        System.out.println("la liste est "+liste.getids());
+                        System.out.println("La liste est "+liste.getids());
                     } catch (UserNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -113,16 +99,15 @@ public class Ecoute extends Thread {
 
                 else if(liste.verifyUserNamePresent(received) || received.equals(connexion.getPseudo())){
                     listener.invalidID();
-                    //System.out.println("l'util est present");
                     String msgErreur = "Id already used" ;
-                    System.out.println("le nom d'utilisateur "+received+" est deja utilisé");
+                    System.out.println("Le nom d'utilisateur "+received+" est deja utilisé");
 
                     byte[] buf = msgErreur.getBytes();
 
                     packet = new DatagramPacket(buf, buf.length, address, UDP.UDP_PORT);
                     try {
                         socket.send(packet);
-                        System.out.println("j'envoie le packet et le port est : " +packet.getPort());
+                        System.out.println("J'envoie le packet et le port est : " +packet.getPort());
 
 
                     } catch (IOException e) {
@@ -144,7 +129,6 @@ public class Ecoute extends Thread {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    BDD.createNewTable("CentralMessages" , received );
                     System.out.println(""+connexion.getPseudo());
                 }
 

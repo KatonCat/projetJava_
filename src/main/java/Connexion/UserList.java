@@ -45,6 +45,7 @@ public class UserList {
          return false;
     }
 
+    public void clear(){users.clear();}
 
     public List<String> getids() throws UserNotFoundException{
         List<String> userids = new ArrayList<>();

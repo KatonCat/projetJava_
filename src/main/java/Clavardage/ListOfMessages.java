@@ -10,14 +10,22 @@ public class ListOfMessages {
     private ObservableList<Message> message =  FXCollections.observableArrayList();
 
     public void addMsg(Message msg) {
-        message.add(msg);
-    }
+        synchronized (message) {message.add(msg);
+    }}
 
     public void delMsg(Message msg) {
-        message.remove(msg);
-    }
+        synchronized (message) {message.remove(msg);
+    }}
+
+    public void clear(){message.clear();}
+
+    public Message getMessage(int i){return message.get(i);}
+
+    public Message getLast(){return message.get(message.size()-1);}
 
     public ObservableList<Message> getMessage() {
         return message;
     }
+
+
 }

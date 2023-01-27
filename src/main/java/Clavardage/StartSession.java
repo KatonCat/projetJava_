@@ -1,103 +1,57 @@
 package Clavardage;
-import BDD.BDD;
-import BDD.Insert;
+
+import Connexion.Ecoute;
 import ConnexionExceptions.UserNotFoundException;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Scanner;
-
-import static Connexion.Ecoute.liste;
 
 public class StartSession extends Thread{
     private InetAddress addr;
-    private String pseudo;
-    private clientTCP client = new clientTCP();
-    public StartSession(InetAddress addr) throws UserNotFoundException {
+    private ClientTCP client = new ClientTCP();
+    public StartSession(InetAddress addr) {
         this.addr = addr;
-        //this.pseudo= liste.getUserByAdd(addr).getUserName();
+        ServeurTCP.sessionList.addSession(this);
     }
-    public clientTCP getClient(){
+    public ClientTCP getClient(){
         return this.client;
     }
     public InetAddress getAddress(){return this.addr;}
 
-
-
-
-    /*public static class ClientEcoute extends Thread {
-        private final clientTCP client;
-        public ClientEcoute(clientTCP client){
-            this.client=client;
-        }
-        public void run() {
-            String MsgRecu;
-            try {
-                MsgRecu = client.rcvMessage();
-
-            while (!this.isInterrupted()) {
-                if(MsgRecu.equals("end1")) {
-                    this.interrupt();
-                    System.out.println("La connexion est finie, veuillez appuyer sur entrée");
-                }
-                System.out.println(MsgRecu);
-                MsgRecu = client.rcvMessage();
-                //ListeMsg.addMsg(new Message("Juan",msg, new Timestamp(date.getTime())));
-            }
-
-
-            } catch (IOException e) {
-                System.err.println("Could not read.");
-                e.printStackTrace();
-            }
-        }
-    }*/
+    public ListOfMessages listeMsg= new ListOfMessages();
 
     public  void run(){
 
-        //BDD.createNewTable("CentralMessages", addr.getHostAddress()+pseudo);
-        ListOfMessages ListeMsg= new ListOfMessages();
-        Scanner entreeClavier = new Scanner(System.in);
+
+
         try {
             client.startConnexion(addr, 1769);
-
             client.sendMessage("hello dude");
             String response = client.rcvMessage();
+            String pseudo = Ecoute.liste.getUserByAdd(addr).getUserName();
             System.out.println(addr.getHostAddress() + " : " + response);
             String MsgRecu;
             MsgRecu = client.rcvMessage();
 
             while (!this.isInterrupted()) {
+
+                System.out.println(MsgRecu);
+                listeMsg.addMsg(new Message(pseudo,MsgRecu,new Timestamp(System.currentTimeMillis())));
+                MsgRecu = client.rcvMessage();
                 if(MsgRecu.equals("end1")) {
                     this.interrupt();
                     System.out.println("La connexion est finie, veuillez appuyer sur entrée");
                 }
-                System.out.println(MsgRecu);
-                MsgRecu = client.rcvMessage();
-                //ListeMsg.addMsg(new Message("Juan",msg, new Timestamp(date.getTime())));
             }
 
-            /*ClientEcoute Oreille = new ClientEcoute(client);
-            Oreille.start();
-            String msg;
-            while (!Oreille.isInterrupted() ^ !Oreille.isAlive()) {
-                msg = entreeClavier.nextLine();
-                client.sendMessage(msg);
-                Date date = new Date();
-                //BDD.insert("CentralMessages", addr.getHostAddress()+pseudo, new Message(addr.getHostAddress(), msg, new Timestamp(date.getTime())));
-                //ListeMsg.addMsg(new Message("Juan",msg, new Timestamp(date.getTime())));
-                if (msg.equals("end1")) {
-                    Oreille.interrupt();
-                }
-            }*/
             System.out.println("La connexion est finie");
             client.stopConnexion();
 
-        }catch (IOException e) {
+        }catch (IOException | UserNotFoundException e) {
             e.printStackTrace();
             System.err.println("Could not connect.");
         }
+        ServeurTCP.sessionList.delSession(this);
     }
 }

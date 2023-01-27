@@ -38,8 +38,7 @@ public class App extends Application {
         this.stage= primaryStage;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("welcome.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 580, 340);
-        //Scene scene2 = new Scene(fxmlLoader2.load(), 580, 340);
-        primaryStage.setTitle("java app");
+        primaryStage.setTitle("Clavardage");
         primaryStage.setScene(scene);
         primaryStage.show();
 

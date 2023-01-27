@@ -1,7 +1,9 @@
+import Clavardage.ServeurTCP;
+import Clavardage.ClientTCP;
 import ConnexionExceptions.UserNotFoundException;
 
 import java.io.IOException;
-import java.net.InetAddress;
+import java.util.Scanner;
 
 public class mainTest {
     public static void main(String args[]) throws IOException, UserNotFoundException {
@@ -29,5 +31,22 @@ public class mainTest {
         //new Connexion().verifyId();
 
         //new Connexion().verifyId();
-    }
+        // new Ecoute().start();
+        // new Connexion().verifyId();
+        ServeurTCP Server = new ServeurTCP(1769);
+        Server.start();
+        //int index = ServeurTCP.threadList.findThread("127.0.0.1");
+        Scanner entreeClavier = new Scanner(System.in);
+
+        System.out.println(ServeurTCP.clientList.lengthListe());
+        ClientTCP client;
+        String msg = entreeClavier.nextLine();
+        client = ServeurTCP.clientList.getClient(0);
+        msg = entreeClavier.nextLine();
+        client.sendMessage(msg);
+        client.sendMessage("end1");
+        System.out.println("sdas");
+        Server.close();
+
+    };
 }
